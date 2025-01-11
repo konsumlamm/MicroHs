@@ -312,9 +312,12 @@ geI :: Integer -> Integer -> Bool
 geI x y = not (ltI x y)
 
 -- To make the [Int] representing an integer portable, we
--- need to base that does not depend on the word size
-integerListBase :: Integer
-integerListBase = 32768
+-- need a base that does not depend on the word size.
+integerListShift :: Int
+integerListShift = 16
+
+integerListBase :: Word
+integerListBase = 1 `shiftL` integerListShift
 
 -- These two functions return an (opaque) representation of an
 -- Integer as [Int].
@@ -322,13 +325,28 @@ integerListBase = 32768
 -- First _integerToIntList is used in the compiler to get a list of
 -- Int, and the generated code will have a call to _intListToInteger.
 _integerToIntList :: Integer -> [Int]
-_integerToIntList i = if i < 0 then (-1::Int) : f (-i) else f i
-  where f 0 = []
-        f i = fromInteger r : f q  where (q, r) = quotRem i integerListBase
+_integerToIntList (I sign ds) = if sign == Minus then (-1 :: Int) : f ds else f ds
+  where
+    f ds
+      | _wordSize == 64 = splitDigits ds
+      | _wordSize == 32 = map primWordToInt ds
+      | otherwise = error "Integer: unsupported word size"
+
+    splitDigits [] = []
+    splitDigits (d : ds) = primWordToInt (d .&. (integerListBase - 1)) : primWordToInt (d `shiftR` integerListShift) : splitDigits ds
 
 _intListToInteger :: [Int] -> Integer
-_intListToInteger ads@(x : ds) = if x == -1 then - f ds else f ads
-  where f = foldr (\ d a -> a * integerListBase + toInteger d) 0
+_intListToInteger [] = zeroI
+_intListToInteger ads@(x : ds) = if x == -1 then I Minus (f ds) else I Plus (f ads)
+  where
+    f ds
+      | _wordSize == 64 = mergeDigits ds
+      | _wordSize == 32 = map primIntToWord ds
+      | otherwise = error "Integer: unsupported word size"
+
+    mergeDigits [] = []
+    mergeDigits [d] = [primIntToWord d]
+    mergeDigits (d1 : d2 : ds) = primIntToWord (d1 .&. (d2 `shiftL` integerListShift)) : mergeDigits ds
 
 ---------------------------------
 {-
