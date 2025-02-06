@@ -812,7 +812,7 @@ sort_buffer(uint8_t *buf, size_t buflen, uint32_t *res)
 uint32_t
 encode_bwt(uint8_t *data, size_t len, uint8_t *last)
 {
-  uint32_t *res = malloc(len * sizeof(uint32_t));
+  uint32_t *res = MALLOC(len * sizeof(uint32_t));
   if (!res)
     ERR("encode_bwt");
   sort_buffer(data, len, res);
@@ -823,6 +823,7 @@ encode_bwt(uint8_t *data, size_t len, uint8_t *last)
     if (offs == 0)
       zero = i;
   }
+  FREE(res);
   return zero;
 }
 
