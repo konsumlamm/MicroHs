@@ -856,7 +856,7 @@ void
 decode_bwt(uint8_t *data, size_t len, uint8_t *odata, size_t zero)
 {
   size_t count[MAXBYTE];
-  uint32_t *pred = malloc(len * sizeof(uint32_t));
+  uint32_t *pred = MALLOC(len * sizeof(uint32_t));
   for(size_t i = 0; i < MAXBYTE; i++) {
     count[i] = 0;
   }
@@ -874,6 +874,7 @@ decode_bwt(uint8_t *data, size_t len, uint8_t *odata, size_t zero)
     odata[j - 1] = data[i];
     i = pred[i] + count[data[i]];
   }
+  FREE(pred);
 }
 
 BFILE *
