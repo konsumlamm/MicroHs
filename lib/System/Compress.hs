@@ -1,4 +1,4 @@
-module System.Compress(compress, decompress) where
+module System.Compress(compress, decompress, compressRLE, decompressRLE, compressBWT, decompressBWT, compressBWTRLE, decompressBWTRLE) where
 import Prelude(); import MiniPrelude
 import Data.Function
 import Foreign.Ptr
