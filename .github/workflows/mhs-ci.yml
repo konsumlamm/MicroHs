@@ -212,28 +212,21 @@ jobs:
 #      run: make CONF=unix-64 everytestmhs
 #      shell: alpine.sh {0}
 
-  build-linux-emscripten:
-    runs-on: ubuntu-latest
+  build-emscripten:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4
     - uses: mymindstorm/setup-emsdk@v13
     - uses: actions/setup-node@v4
       with:
         node-version: 20
-    - uses: haskell-actions/setup@v2
-    - name: make newmhs
-      run: make newmhs
-    - name: run emscripten tests
-      run: make runtestemscripten
-
-  build-macos-emscripten:
-    runs-on: macos-latest
-    steps:
-    - uses: actions/checkout@v4
-    - uses: mymindstorm/setup-emsdk@v13
-    - uses: actions/setup-node@v4
+    - uses: actions/cache@v4
       with:
-        node-version: 20
+        path: ~/.ghcup
+        key: ${{ runner.os }}-ghcup
     - uses: haskell-actions/setup@v2
     - name: make newmhs
       run: make newmhs
