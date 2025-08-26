@@ -31,9 +31,9 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y libgmp-dev
     - name: make
-      run: make MHSGMPCCFLAGS=-DWANT_GMP=1 MCABALGMP=-fgmp MHSGMP=-ilib/gmp MHSGMPCCLIBS=-lgmp
+      run: make USEGMP=1
     - name: make everytestmhs
-      run: make MHSGMPCCFLAGS=-DWANT_GMP=1 MCABALGMP=-fgmp MHSGMP=-ilib/gmp MHSGMPCCLIBS=-lgmp everytestmhs
+      run: make USEGMP=1 everytestmhs
 
   build-macos:
     runs-on: macos-latest

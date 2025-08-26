@@ -1,9 +1,12 @@
-# Define these 4 lines to use GMP for Integer.
+# Define USEGMP to use GMP.
+#USEGMP = 1
+ifdef USEGMP
 # For MacOS with homebrew:
-#MHSGMPCCFLAGS=-DWANT_GMP=1
-#MHSGMPCCLIBS= -L/opt/homebrew/lib -lgmp -I/opt/homebrew/include
-#MHSGMP=-ilib/gmp
-#MCABALGMP=-fgmp
+MHSGMPCCFLAGS=-DWANT_GMP=1
+MHSGMPCCLIBS=-L/opt/homebrew/lib -lgmp -I/opt/homebrew/include
+MHSGMP=-ilib/gmp
+MCABALGMP=-fgmp
+endif
 #
 # installation prefix
 PREFIX=/usr/local
@@ -46,7 +49,7 @@ NODE=node
 #NODEFLAGS=--stack_size=8192
 #
 MHSINCNP= -i $(MHSGMP) -imhs -isrc -ilib
-MHSINC=$(MHSINCNP) -ipaths 
+MHSINC=$(MHSINCNP) -ipaths
 MAINMODULE=MicroHs.Main
 #
 .PHONY:	clean bootstrap install ghcgen newmhs newmhsz cachelib timecompile exampletest cachetest runtest runtestmhs everytest everytestmhs nfibtest info install minstall installmsg
@@ -136,7 +139,7 @@ mhs.js:	src/*/*.hs $(RTS)/*.h $(RTS)/*/*.h targets.conf
 bootstrap:	bin/mhs-stage2
 	@echo "*** copy stage2 to bin/mhs"
 	cp bin/mhs-stage2 bin/mhs
-	cp generated/mhs-stage2.c generated/mhs.c 
+	cp generated/mhs-stage2.c generated/mhs.c
 
 # Build stage1 compiler with existing compiler
 bin/mhs-stage1:	bin/mhs src/*/*.hs
