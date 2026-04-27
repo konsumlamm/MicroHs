@@ -1057,6 +1057,41 @@ NODEPTR combFst, combSnd;
 #define combGT combKA
 
 /*******************************/
+#include "HsFFI.h"
+
+int mhs_main(int argc, char **argv);
+
+void hs_init(int *argc, char **argv[])
+{
+  mhs_main(*argc, *argv);
+}
+
+void hs_exit(void)
+{
+  exit(0);
+}
+
+void hs_set_argv(int argc, char *argv[])
+{
+  ERR("hs_set_argv not implemented");
+}
+
+void hs_perform_gc(void)
+{
+  gc();
+}
+
+void hs_free_stable_ptr(HsStablePtr sp)
+{
+  /* XXX need to change representation of stablepointers */
+}
+
+void hs_free_fun_ptr(HsFunPtr fp)
+{
+  ERR("hs_free_fun_ptr not implemented");
+}
+
+/*******************************/
 
 #if WANT_ARGS
 /* This single element array hold a list of the program arguments. */
